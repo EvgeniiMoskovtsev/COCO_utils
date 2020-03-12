@@ -1,0 +1,5 @@
+images:
+  path: 'C:\Users\apelv\Desktop\utils\labelme2coco\pack3\pack_3'
+annotations:
+  path: 'C:\Users\apelv\Desktop\utils\labelme2coco\pack3\trainval.json'
+  type: 'COCO'
