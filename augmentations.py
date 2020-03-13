@@ -1,13 +1,13 @@
 from leafs.parsecoco import ParseCoco
 from imgaug.augmentables.polys import Polygon
-import imageio
-import imgaug as ia
+from imgaug import PolygonsOnImage
+from tqdm import tqdm
 import imgaug.augmenters as iaa
+import imageio
 import cv2
 import os
-from tqdm import tqdm
 import yaml
-from leafs.writecoco import WriteCoco
+
 
 class AugPolygons:
     def load_config(self, path_to_config):
@@ -26,7 +26,7 @@ class AugPolygons:
                          path_to_json=PATH_TO_JSON,
                          type_of_labels=TYPE_OF_LABELS)()
         loop = 0
-        while loop != 5:
+        while loop != 5: # Fives times make augmentations
             for filename, polygons in tqdm(data.items()):
                 image = imageio.imread(os.path.join(PATH_TO_PACKAGE_IMAGES, filename))
                 list_of_poly_objects = []
@@ -34,7 +34,7 @@ class AugPolygons:
                     poly_object = Polygon(polygon)
                     list_of_poly_objects.append(poly_object)
 
-                psoi = ia.PolygonsOnImage(list_of_poly_objects, shape=image.shape)
+                psoi = PolygonsOnImage(list_of_poly_objects, shape=image.shape)
                 aug = iaa.Sequential([
                     iaa.AdditiveGaussianNoise(scale=(0, 50)),
                     iaa.SigmoidContrast(gain=(3, 10), cutoff=(0.4, 0.6)),
@@ -46,7 +46,6 @@ class AugPolygons:
                 image_aug, psoi_aug = aug(image=image, polygons=psoi)
                 # new_name = filename.split('.')[0]
                 cv2.imwrite("augmented/{}loop{}.jpg".format(filename, LOOPS), image_aug)
-                WriteCoco()
             loop += 1
 
 
@@ -71,7 +70,7 @@ if __name__ == "__main__":
                 poly_object = Polygon(polygon)
                 list_of_poly_objects.append(poly_object)
 
-            psoi = ia.PolygonsOnImage(list_of_poly_objects, shape=image.shape)
+            psoi = PolygonsOnImage(list_of_poly_objects, shape=image.shape)
             aug = iaa.Sequential([
                 iaa.AdditiveGaussianNoise(scale=(0, 50)),
                 iaa.SigmoidContrast(gain=(3, 10), cutoff=(0.4, 0.6)),
