@@ -51,7 +51,7 @@ class AugPolygons:
 
 
 if __name__ == "__main__":
-    with open("config.yml", 'r') as ymlfile:
+    with open("configs/config.yml", 'r') as ymlfile:
         cfg = yaml.full_load(ymlfile)
 
     PATH_TO_PACKAGE_IMAGES = cfg['images']['path']
